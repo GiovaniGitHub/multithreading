@@ -51,7 +51,7 @@ curl -X 'GET' \
  -H 'accept: application/json'
 ```
 
-Substitua {cep} pelo CEP que você deseja consultar.
+Substitua ``{cep}`` pelo CEP que você deseja consultar.
 
 #### Resposta
 
