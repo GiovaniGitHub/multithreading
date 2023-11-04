@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"regexp"
 	"time"
@@ -82,12 +83,13 @@ func GetAddress(w http.ResponseWriter, r *http.Request) {
 
 	select {
 	case res := <-ch:
-		fmt.Println("Resultado da API mais rápida:")
-		fmt.Println("API:", res.Api)
-		fmt.Println("CEP:", res.Cep)
-		fmt.Println("Localidade:", res.Localidade)
-		fmt.Println("Logradouro:", res.Logradouro)
+		data, err := json.MarshalIndent(res, "", "  ")
+		if err != nil {
+			log.Fatalf("Erro ao serializar os dados em JSON: %v", err)
+		}
+		log.Print(string(data))
 		json.NewEncoder(w).Encode(res)
+
 	case <-time.After(1 * time.Second):
 		fmt.Println("Timeout atingido. Nenhuma resposta recebida a tempo.")
 		http.Error(w, "Timeout atingido. Nenhuma resposta recebida a tempo.", http.StatusRequestTimeout)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/GiovaniGitHub/multithreading/configs"
@@ -28,7 +29,7 @@ import (
 func main() {
 	configs, err := configs.LoadConfig(".")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Erro ao carregar configurações: %v", err)
 	}
 
 	r := chi.NewRouter()
@@ -36,6 +37,14 @@ func main() {
 	r.Route("/cep", func(r chi.Router) {
 		r.Get("/{cep}", handlers.GetAddress)
 	})
+
+	// Inicia o servidor
+	apiURL := "http://localhost:" + configs.WebServerPort + "/cep"
+	log.Printf("API está disponível em: %s", apiURL)
+
+	// Inicia o Swagger
+	log.Printf("API Swagger está disponível em: %s", "http://localhost:"+configs.WebServerPort+"/docs/index.html")
+
 	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:"+configs.WebServerPort+"/docs/doc.json")))
 	http.ListenAndServe(fmt.Sprintf(":%s", configs.WebServerPort), r)
 }
